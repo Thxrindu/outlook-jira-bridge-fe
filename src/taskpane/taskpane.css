@@ -1,0 +1,561 @@
+/* 
+ * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+ * See LICENSE in the project root for license information.
+ */
+
+/* html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f3f4f6;
+  font-family: "Segoe UI", sans-serif;
+}
+
+main .card {
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  padding: 20px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #0f6cbd;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #c8c8c8;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.primary-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: #0f6cbd;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.primary-button:hover {
+  background: #0c5aa6;
+}
+
+.output-card {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #dcdcdc;
+  display: none;
+}
+
+.loading-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.7);
+
+  display: none;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.loading-box {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 8px;
+
+  text-align: center;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.spinner {
+  width: 40px;
+
+  height: 40px;
+
+  border: 4px solid #ddd;
+
+  border-top: 4px solid #0078d4;
+
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+
+  margin: auto auto 15px;
+}
+
+#jira-account-section {
+  padding: 16px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #e1e4e8;
+
+  margin-bottom: 15px;
+}
+
+.section-title {
+  margin: 0 0 15px 0;
+
+  font-size: 18px;
+
+  font-weight: 600;
+}
+
+.jira-profile-container {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 15px;
+}
+
+.jira-profile-image {
+  width: 45px;
+
+  height: 45px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.jira-profile-details {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.jira-user-name {
+  margin: 0;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #172b4d;
+}
+
+.jira-user-status {
+  margin: 3px 0 0 0;
+
+  font-size: 12px;
+
+  color: #6b778c;
+}
+
+.jira-login-button {
+  width: 100%;
+
+  height: 36px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: #0052cc;
+
+  color: white;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.jira-login-button:hover {
+  background: #0747a6;
+} */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  background: #f5f6f8;
+
+  font-family: "Segoe UI", sans-serif;
+
+  color: #172b4d;
+}
+
+.container {
+  padding: 16px;
+}
+
+.app-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 18px 16px;
+}
+
+.app-logo {
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 12px;
+
+  background: #0f6cbd;
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 22px;
+}
+
+.app-header h1 {
+  margin: 0;
+
+  font-size: 20px;
+
+  font-weight: 700;
+}
+
+.app-header span {
+  font-size: 12px;
+
+  color: #667085;
+}
+
+.card {
+  background: white;
+
+  margin: 12px 16px;
+
+  padding: 16px;
+
+  border-radius: 14px;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.card-header h3 {
+  margin: 0 0 16px;
+
+  font-size: 16px;
+}
+
+.jira-profile-container {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 15px;
+}
+
+.jira-profile-image {
+  width: 48px;
+
+  height: 48px;
+
+  border-radius: 50%;
+}
+
+.jira-user-name {
+  margin: 0;
+
+  font-weight: 600;
+}
+
+.jira-user-status {
+  margin: 4px 0;
+
+  font-size: 12px;
+
+  color: #6b7280;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  border: 1px solid #d1d5db;
+
+  background: white;
+
+  font-size: 14px;
+
+  transition: 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+
+  border-color: #0f6cbd;
+
+  box-shadow: 0 0 0 2px rgba(15, 108, 189, 0.15);
+}
+
+.section-label {
+  margin: 18px 0 10px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  color: #6b7280;
+}
+
+.primary-button {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #0f6cbd;
+
+  color: white;
+
+  font-weight: 600;
+
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: #115ea3;
+}
+
+.secondary-button {
+  width: 100%;
+
+  padding: 10px;
+
+  border-radius: 8px;
+
+  border: 1px solid #0f6cbd;
+
+  background: white;
+
+  color: #0f6cbd;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #eff6ff;
+}
+
+.output-card {
+  margin-top: 15px;
+
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #f0fdf4;
+
+  border: 1px solid #86efac;
+
+  display: none;
+}
+
+.loading-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(255, 255, 255, 0.7);
+
+  display: none;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.loading-box {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: 8px;
+
+  text-align: center;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.spinner {
+  width: 40px;
+
+  height: 40px;
+
+  border: 4px solid #ddd;
+
+  border-top: 4px solid #0078d4;
+
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+
+  margin: auto auto 15px;
+}
+
+#toast-container {
+  position: fixed;
+
+  top: 20px;
+
+  right: 20px;
+
+  z-index: 10000;
+}
+
+.toast {
+  min-width: 280px;
+
+  padding: 14px 16px;
+
+  border-radius: 10px;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  animation: slideIn 0.3s ease;
+
+  margin-bottom: 10px;
+}
+
+.toast-success {
+  background: #107c10;
+}
+
+.toast-error {
+  background: #d13438;
+}
+
+.toast-warning {
+  background: #797775;
+}
+
+.toast-hide {
+  animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+
+    transform: translateX(120%);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

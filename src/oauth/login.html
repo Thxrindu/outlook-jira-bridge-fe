@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Connecting to Jira</title>
+
+    <script type="text/javascript"
+        src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js">
+    </script>
+</head>
+
+<body>
+
+<h3>
+    Connecting to Jira...
+</h3>
+
+<script>
+
+Office.onReady(() => {
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const authUrl = params.get("url");
+
+    window.location.href = authUrl;
+
+});
+
+</script>
+
+</body>
+</html>
