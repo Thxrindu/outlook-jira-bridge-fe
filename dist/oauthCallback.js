@@ -1,2 +1,0 @@
-!function(){console.log("OAuth callback loaded");var e=new URLSearchParams(window.location.search),a=e.get("code"),t=e.get("state");Office.onReady(function(){Office.context.ui.messageParent(JSON.stringify({code:a,state:t}))})}();
-//# sourceMappingURL=oauthCallback.js.map
