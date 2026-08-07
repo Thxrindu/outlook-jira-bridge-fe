@@ -6,8 +6,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 // const Dotenv = require("dotenv-webpack");
 const webpack = require("webpack");
 
-const urlDev = "http://localhost:3001";
-const urlProd = "https://outlook-jira-bridge-be-production.up.railway.app";
+const apiUrlDev = "http://localhost:3001";
+const apiUrlProd = "https://outlook-jira-bridge-be-production.up.railway.app";
+
+const frontendUrlDev = "https://localhost:3000";
+const frontendUrlProd = "https://thxrindu.github.io/outlook-jira-bridge-fe";
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -27,6 +30,7 @@ module.exports = async (env, options) => {
     },
     output: {
       clean: true,
+      publicPath: dev ? "/" : "/outlook-jira-bridge-fe/",
     },
     resolve: {
       extensions: [".ts", ".html", ".js"],
@@ -69,11 +73,21 @@ module.exports = async (env, options) => {
           {
             from: "manifest*.json",
             to: "[name]" + "[ext]",
+            // transform(content) {
+            //   if (dev) {
+            //     return content;
+            //   } else {
+            //     return content.toString().replace(new RegExp(apiUrlDev , "g"), apiUrlProd );
+            //   }
+            // },
             transform(content) {
               if (dev) {
                 return content;
               } else {
-                return content.toString().replace(new RegExp(urlDev, "g"), urlProd);
+                return content
+                  .toString()
+                  .replace(new RegExp(apiUrlDev, "g"), apiUrlProd)
+                  .replace(new RegExp(frontendUrlDev, "g"), frontendUrlProd);
               }
             },
           },
