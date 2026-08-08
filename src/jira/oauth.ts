@@ -119,6 +119,10 @@ export async function loginToJira() {
 
   const authUrl = `${AUTHORIZATION_URL}?${params.toString()}`;
 
+  console.log("FRONTEND_URL:", FRONTEND_URL);
+  console.log("REDIRECT_URI:", REDIRECT_URI);
+  console.log("AUTH_URL:", authUrl);
+
   // const dialogUrl = `https://localhost:3000/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
   const dialogUrl = `${FRONTEND_URL}/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
 
