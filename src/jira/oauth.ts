@@ -4,17 +4,32 @@ import { updateJiraAccountUI } from "./authUI";
 import { loadJiraMetadata } from "./metadataService";
 import { populateDropdown } from "../taskpane/formRenderer";
 import { loadJiraConfiguration } from "./jiraApi";
-import { setupIssueTypeChangeListener, setupProjectChangeListener } from "../utils/listners";
+import {
+  setupIssueTypeChangeListener,
+  setupProjectChangeListener,
+} from "../utils/listners";
 
 const JIRA_CLIENT_ID = "ZvZ89GrSZ97P1WeTi7CSOAkhkOeTUd6y";
 // const JIRA_CLIENT_ID = "fMQvJka21QNyHOZ7PQHtxbK2TGRo4uJ4";
-const REDIRECT_URI = "https://localhost:3000/oauth/callback.html";
+// const REDIRECT_URI = "https://localhost:3000/oauth/callback.html";
+const REDIRECT_URI = `${FRONTEND_URL}/oauth/callback.html`;
 const AUTHORIZATION_URL = "https://auth.atlassian.com/authorize";
+
+const FRONTEND_URL =
+  window.location.hostname === "localhost"
+    ? "https://localhost:3000"
+    : "https://thxrindu.github.io/outlook-jira-bridge-fe";
+
+const BACKEND_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3001"
+    : "https://outlook-jira-bridge-be-production.up.railway.app";
 
 export async function exchangeCodeForToken(code: string) {
   const codeVerifier = sessionStorage.getItem("jira_code_verifier");
 
-  const response = await fetch("http://localhost:3001/api/auth/token", {
+  // const response = await fetch("http://localhost:3001/api/auth/token", {
+  const response = await fetch(`${BACKEND_URL}/api/auth/token`, {
     method: "POST",
 
     headers: {
@@ -37,7 +52,8 @@ export async function exchangeCodeForToken(code: string) {
 }
 
 function generateRandomString(length: number): string {
-  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const charset =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
   const randomValues = new Uint8Array(length);
 
@@ -67,7 +83,9 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
 
 export async function loginToJira() {
   showLoader("Logging into Jira...");
-  const loginButton = document.getElementById("jira-login") as HTMLButtonElement;
+  const loginButton = document.getElementById(
+    "jira-login",
+  ) as HTMLButtonElement;
 
   loginButton.disabled = true;
 
@@ -101,7 +119,8 @@ export async function loginToJira() {
 
   const authUrl = `${AUTHORIZATION_URL}?${params.toString()}`;
 
-  const dialogUrl = `https://localhost:3000/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
+  // const dialogUrl = `https://localhost:3000/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
+  const dialogUrl = `${FRONTEND_URL}/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
 
   Office.context.ui.displayDialogAsync(
     dialogUrl,
@@ -133,7 +152,10 @@ export async function loginToJira() {
 
           localStorage.setItem("jira_session_id", jiraUser.sessionId);
 
-          updateJiraAccountUI(jiraUser.user.displayName, jiraUser.user.avatarUrls);
+          updateJiraAccountUI(
+            jiraUser.user.displayName,
+            jiraUser.user.avatarUrls,
+          );
 
           // const metadata = await loadJiraMetadata();
 
@@ -156,7 +178,11 @@ export async function loginToJira() {
 
           // Load projects
 
-          populateDropdown("projectId", configuration.projects, "-- Select Project --");
+          populateDropdown(
+            "projectId",
+            configuration.projects,
+            "-- Select Project --",
+          );
 
           setupProjectChangeListener();
 
@@ -173,9 +199,9 @@ export async function loginToJira() {
           `;
 
           dialog.close();
-        }
+        },
       );
-    }
+    },
   );
   loginButton.disabled = false;
   hideLoader();
