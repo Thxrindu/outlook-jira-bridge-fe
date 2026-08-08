@@ -12,7 +12,7 @@ import {
 const JIRA_CLIENT_ID = "ZvZ89GrSZ97P1WeTi7CSOAkhkOeTUd6y";
 // const JIRA_CLIENT_ID = "fMQvJka21QNyHOZ7PQHtxbK2TGRo4uJ4";
 // const REDIRECT_URI = "https://localhost:3000/oauth/callback.html";
-const REDIRECT_URI = `${FRONTEND_URL}/oauth/callback.html`;
+
 const AUTHORIZATION_URL = "https://auth.atlassian.com/authorize";
 
 const FRONTEND_URL =
@@ -24,6 +24,8 @@ const BACKEND_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:3001"
     : "https://outlook-jira-bridge-be-production.up.railway.app";
+
+const REDIRECT_URI = `${FRONTEND_URL}/oauth/callback.html`;
 
 export async function exchangeCodeForToken(code: string) {
   const codeVerifier = sessionStorage.getItem("jira_code_verifier");
@@ -118,10 +120,6 @@ export async function loginToJira() {
   });
 
   const authUrl = `${AUTHORIZATION_URL}?${params.toString()}`;
-
-  console.log("FRONTEND_URL:", FRONTEND_URL);
-  console.log("REDIRECT_URI:", REDIRECT_URI);
-  console.log("AUTH_URL:", authUrl);
 
   // const dialogUrl = `https://localhost:3000/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
   const dialogUrl = `${FRONTEND_URL}/oauth/login.html?url=${encodeURIComponent(authUrl)}`;
