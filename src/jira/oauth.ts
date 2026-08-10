@@ -4,10 +4,8 @@ import { updateJiraAccountUI } from "./authUI";
 import { loadJiraMetadata } from "./metadataService";
 import { populateDropdown } from "../taskpane/formRenderer";
 import { loadJiraConfiguration } from "./jiraApi";
-import {
-  setupIssueTypeChangeListener,
-  setupProjectChangeListener,
-} from "../utils/listners";
+import { setupIssueTypeChangeListener, setupProjectChangeListener } from "../utils/listners";
+import { initializeJiraUI } from "./jiraInitializer";
 
 const JIRA_CLIENT_ID = "ZvZ89GrSZ97P1WeTi7CSOAkhkOeTUd6y";
 // const JIRA_CLIENT_ID = "fMQvJka21QNyHOZ7PQHtxbK2TGRo4uJ4";
@@ -54,8 +52,7 @@ export async function exchangeCodeForToken(code: string) {
 }
 
 function generateRandomString(length: number): string {
-  const charset =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
   const randomValues = new Uint8Array(length);
 
@@ -85,9 +82,7 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
 
 export async function loginToJira() {
   showLoader("Logging into Jira...");
-  const loginButton = document.getElementById(
-    "jira-login",
-  ) as HTMLButtonElement;
+  const loginButton = document.getElementById("jira-login") as HTMLButtonElement;
 
   loginButton.disabled = true;
 
@@ -152,43 +147,25 @@ export async function loginToJira() {
             user: jiraUser.user,
           });
 
+          console.log("jira_session_id", jiraUser.sessionId);
+
           localStorage.setItem("jira_session_id", jiraUser.sessionId);
 
-          updateJiraAccountUI(
-            jiraUser.user.displayName,
-            jiraUser.user.avatarUrls,
-          );
+          // updateJiraAccountUI(jiraUser.user.displayName, jiraUser.user.avatarUrls);
 
-          // const metadata = await loadJiraMetadata();
+          // const configuration = await loadJiraConfiguration();
 
-          // const categoryField = metadata.fields.find((field) => field.name === "Category");
-          // //   console.log(categoryField);
-          // if (categoryField?.options) {
-          //   populateDropdown("categoryId", categoryField.options, "-- Select Category --");
-          // }
-
-          // const componentField = metadata.fields.find((field) => field.name === "Component");
-          // //   console.log(componentField);
-
-          // if (componentField?.options) {
-          //   populateDropdown("componentId", componentField.options, "-- Select component --");
-          // }
-
-          const configuration = await loadJiraConfiguration();
-
-          console.log("Jira Configuration", configuration);
+          // console.log("Jira Configuration", configuration);
 
           // Load projects
 
-          populateDropdown(
-            "projectId",
-            configuration.projects,
-            "-- Select Project --",
-          );
+          // populateDropdown("projectId", configuration.projects, "-- Select Project --");
 
-          setupProjectChangeListener();
+          // setupProjectChangeListener();
 
-          setupIssueTypeChangeListener();
+          // setupIssueTypeChangeListener();
+
+          await initializeJiraUI(jiraUser.user);
 
           const output = document.getElementById("item-subject");
 
@@ -201,9 +178,9 @@ export async function loginToJira() {
           `;
 
           dialog.close();
-        },
+        }
       );
-    },
+    }
   );
   loginButton.disabled = false;
   hideLoader();

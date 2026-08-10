@@ -5,7 +5,12 @@
 
 /* global document, Office */
 
-import { createJiraIssue, getProjects } from "../jira/jiraApi";
+import {
+  createJiraIssue,
+  getProjects,
+  loadJiraConfiguration,
+  restoreJiraSession,
+} from "../jira/jiraApi";
 import { buildEmailTemplate } from "../email/emailTemplate";
 import { RequestData } from "../models/types";
 import { showSuccess, showError } from "../utils/messages";
@@ -14,13 +19,29 @@ import { getRecipients } from "../email/recipients";
 import { validateRequest } from "../utils/validation";
 import { loginToJira } from "../jira/oauth";
 import { getJiraSession } from "../jira/session";
+import { updateJiraAccountUI } from "src/jira/authUI";
+import { populateDropdown } from "./formRenderer";
+import { setupIssueTypeChangeListener, setupProjectChangeListener } from "src/utils/listners";
+import { initializeJiraUI } from "../jira/jiraInitializer";
 
-Office.onReady((info) => {
+// Office.onReady((info) => {
+//   if (info.host === Office.HostType.Outlook) {
+//     document.getElementById("sideload-msg").style.display = "none";
+//     document.getElementById("app-body").style.display = "block";
+//     document.getElementById("run").onclick = runOutlook;
+//     document.getElementById("jira-login")!.onclick = loginToJira;
+//   }
+// });
+
+Office.onReady(async (info) => {
   if (info.host === Office.HostType.Outlook) {
-    document.getElementById("sideload-msg").style.display = "none";
-    document.getElementById("app-body").style.display = "block";
-    document.getElementById("run").onclick = runOutlook;
+    document.getElementById("sideload-msg")!.style.display = "none";
+    document.getElementById("app-body")!.style.display = "block";
+
+    document.getElementById("run")!.onclick = runOutlook;
     document.getElementById("jira-login")!.onclick = loginToJira;
+
+    await restoreExistingJiraSession();
   }
 });
 
@@ -106,5 +127,119 @@ export async function runOutlook() {
     hideLoader();
 
     runButton.disabled = false;
+  }
+}
+
+// async function initializeJiraUI(user: any) {
+//   updateJiraAccountUI(user.displayName, user.avatarUrls);
+
+//   const configuration = await loadJiraConfiguration();
+
+//   console.log("Jira Configuration", configuration);
+
+//   populateDropdown("projectId", configuration.projects, "-- Select Project --");
+
+//   setupProjectChangeListener();
+//   setupIssueTypeChangeListener();
+// }
+
+// async function restoreExistingJiraSession() {
+//   const sessionId = localStorage.getItem("jira_session_id");
+
+//   if (!sessionId) {
+//     console.log("No existing Jira session found.");
+//     return;
+//   }
+
+//   try {
+//     console.log("Restoring existing Jira session...");
+
+//     const session = await restoreJiraSession();
+
+//     if (!session) {
+//       console.log("Jira session expired.");
+//       return;
+//     }
+
+//     console.log("Jira session restored.");
+
+//     await initializeJiraUI(session.user);
+
+//     const output = document.getElementById("item-subject");
+
+//     if (output) {
+//       output.style.display = "block";
+//       output.innerHTML = `
+//         <span style="color:green;">
+//           Logged in as ${session.user.displayName}
+//         </span>
+//       `;
+//     }
+//   } catch (error) {
+//     console.error("Unable to restore Jira session:", error);
+
+//     localStorage.removeItem("jira_session_id");
+//   }
+// }
+
+async function restoreExistingJiraSession() {
+  const sessionId = localStorage.getItem("jira_session_id");
+
+  if (!sessionId) {
+    console.log("No existing Jira session found.");
+    return;
+  }
+
+  try {
+    console.log("Restoring existing Jira session...");
+
+    const session = await restoreJiraSession();
+
+    if (!session) {
+      console.log("Jira session expired.");
+
+      const output = document.getElementById("item-subject");
+
+      if (output) {
+        output.style.display = "block";
+        output.innerHTML = `
+          <span style="color:orange;">
+            Your Jira session has expired. Please sign in again.
+          </span>
+        `;
+      }
+
+      return;
+    }
+
+    console.log("Jira session restored.");
+
+    await initializeJiraUI(session.user);
+
+    const output = document.getElementById("item-subject");
+
+    if (output) {
+      output.style.display = "block";
+      output.innerHTML = `
+        <span style="color:green;">
+          Logged in as ${session.user.displayName}
+        </span>
+      `;
+    }
+  } catch (error) {
+    console.error("Unable to restore Jira session:", error);
+
+    localStorage.removeItem("jira_session_id");
+
+    const output = document.getElementById("item-subject");
+
+    if (output) {
+      output.style.display = "block";
+      output.innerHTML = `
+        <span style="color:orange;">
+          Unable to restore Jira session. Please sign in again.
+        </span>
+      `;
+    }
   }
 }
