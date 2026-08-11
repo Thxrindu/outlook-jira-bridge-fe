@@ -3,116 +3,8 @@ import { showLoader, hideLoader } from "../utils/loading";
 import { JIRA_CONFIG } from "../config/jiraConfig";
 import { backendApi } from "../helpers/apiHelper";
 import { showError } from "../utils/messages";
-// import { getAccessToken, getCloudId } from "./oauth";
-
-// export async function createJiraIssue(
-//     accessToken: string,
-//     cloudId: string,
-//     request: RequestData
-// ) {
-
-//     showLoader("Creating Jira issue...");
-
-//     const payload = {
-//         fields: {
-
-//             project: {
-//                 id: JIRA_CONFIG.project.id
-//             },
-
-//             issuetype: {
-//                 id: JIRA_CONFIG.issueType.id
-//             },
-
-//             summary: request.referenceNo,
-
-//             description: {
-//                 type: "doc",
-//                 version: 1,
-//                 content: [
-//                     {
-//                         type: "paragraph",
-//                         content: [
-//                             {
-//                                 type: "text",
-//                                 text: `Category: ${request.categoryId}`
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         type: "paragraph",
-//                         content: [
-//                             {
-//                                 type: "text",
-//                                 text: `Reason: ${request.reason}`
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         type: "paragraph",
-//                         content: [
-//                             {
-//                                 type: "text",
-//                                 text: `Ref. No.: ${request.referenceNo}`
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         type: "paragraph",
-//                         content: [
-//                             {
-//                                 type: "text",
-//                                 text: `Script Handle By: ${request.handler}`
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             },
-
-//             customfield_10044: {
-//                 id: request.categoryId
-//             },
-
-//             customfield_10046: {
-//                 id: request.componentId
-//             }
-
-//         }
-//     };
-
-//     const url = `${JIRA_CONFIG.apiBaseUrl}/${cloudId}/rest/api/3/issue`;
-
-//     const response = await fetch(
-//         url,
-//         {
-//             method: "POST",
-
-//             headers: {
-//                 Authorization: `Bearer ${accessToken}`,
-//                 Accept: "application/json",
-//                 "Content-Type": "application/json"
-//             },
-
-//             body: JSON.stringify(payload)
-//         }
-//     );
-
-//     const data = await response.json();
-
-//     console.log("Jira Create Response:");
-//     console.log(data);
-
-//     if (data.key) {
-
-//         return `https://outlook-jira.atlassian.net/browse/${data.key}`;
-
-//     }
-
-//     throw new Error("Jira issue creation failed");
-
-//     hideLoader();
-
-// }
+import { APP_CONFIG } from "../config/appConfig";
+import { setJiraSession } from "./session";
 
 //backend call
 export async function createJiraIssue(request: any) {
@@ -131,49 +23,7 @@ export async function createJiraIssue(request: any) {
   return await response.json();
 }
 
-// export async function getProjects(accessToken: string, cloudId: string) {
-//   const response = await fetch(
-//     `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/project/search`,
-//     {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//         Accept: "application/json",
-//       },
-//     }
-//   );
-
-//   const data = await response.json();
-
-//   console.log("Projects:");
-//   console.log(data);
-
-//   return data;
-// }
-
 export async function getProjects() {
-  // const response = await fetch("http://localhost:3001/api/jira/projects", {
-  //   method: "POST",
-
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-
-  //   body: JSON.stringify({
-  //     accessToken: getAccessToken(),
-
-  //     cloudId: getCloudId(),
-  //   }),
-  // });
-
-  // const data = await response.json();
-
-  // console.log("Backend Projects:");
-
-  // console.log(data);
-
-  // return data;
-
   try {
     const response = await backendApi("/api/jira/projects", {
       method: "POST",
@@ -188,24 +38,6 @@ export async function getProjects() {
     showError(error instanceof Error ? error.message : "Unexpected error.");
   }
 }
-
-// export async function getIssueTypes(accessToken: string, cloudId: string) {
-//   const response = await fetch(
-//     `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issuetype`,
-//     {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//         Accept: "application/json",
-//       },
-//     }
-//   );
-
-//   const data = await response.json();
-
-//   console.log("Issue Types:");
-//   console.log(data);
-// }
 
 // backend call
 export async function getIssueTypes(projectId: string) {
@@ -317,4 +149,37 @@ export async function loadJiraConfiguration() {
   }
 
   return response.json();
+}
+
+export async function restoreJiraSession() {
+  const sessionId = localStorage.getItem("jira_session_id");
+
+  if (!sessionId) {
+    return null;
+  }
+
+  const response = await fetch(`${APP_CONFIG.apiUrl}/api/auth/session`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${sessionId}`,
+    },
+  });
+
+  if (response.status === 401) {
+    localStorage.removeItem("jira_session_id");
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error("Unable to restore Jira session");
+  }
+
+  const data = await response.json();
+
+  setJiraSession({
+    sessionId: data.sessionId,
+    user: data.user,
+  });
+
+  return data;
 }
