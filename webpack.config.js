@@ -24,7 +24,7 @@ module.exports = async (env, options) => {
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       taskpane: ["./src/taskpane/taskpane.ts", "./src/taskpane/taskpane.html"],
-      commands: "./src/commands/commands.ts",
+      // commands: "./src/commands/commands.ts",
       oauthCallback: "./src/oauth/callback.ts",
       login: "./src/oauth/login.html",
     },
@@ -93,11 +93,11 @@ module.exports = async (env, options) => {
           },
         ],
       }),
-      new HtmlWebpackPlugin({
-        filename: "commands.html",
-        template: "./src/commands/commands.html",
-        chunks: ["polyfill", "commands"],
-      }),
+      // new HtmlWebpackPlugin({
+      //   filename: "commands.html",
+      //   template: "./src/commands/commands.html",
+      //   chunks: ["polyfill", "commands"],
+      // }),
       new HtmlWebpackPlugin({
         filename: "oauth/callback.html",
         template: "./src/oauth/callback.html",
