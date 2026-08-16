@@ -3,35 +3,43 @@
   "manifestVersion": "1.24",
   "version": "1.0.0",
   "id": "c3f6e865-8761-4701-bfd8-91782112ab9e",
+
   "localizationInfo": {
     "defaultLanguageTag": "en-us",
     "additionalLanguages": []
   },
+
   "developer": {
-    "name": "Contoso",
-    "websiteUrl": "https://www.contoso.com",
-    "privacyUrl": "https://www.contoso.com/privacy",
-    "termsOfUseUrl": "https://www.contoso.com/servicesagreement"
+    "name": "THARINDU SAMARAKOON",
+    "websiteUrl": "https://thxrindu.github.io/portfolio",
+    "privacyUrl": "https://thxrindu.github.io/portfolio/privacy",
+    "termsOfUseUrl": "https://thxrindu.github.io/portfolio/terms"
   },
+
   "name": {
     "short": "Outlook Jira Bridge",
-    "full": "Contoso Task Pane Add-in"
+    "full": "Outlook Jira Bridge"
   },
+
   "description": {
     "short": "Create Jira issues directly from Outlook emails",
     "full": "Create Jira issues directly from Outlook emails."
   },
+
   "icons": {
     "outline": "assets/outline.png",
     "color": "assets/color.png"
   },
+
   "accentColor": "#230201",
+
   "validDomains": [
     "localhost",
     "auth.atlassian.com",
     "thxrindu.github.io",
     "outlook-jira-bridge-be-production.up.railway.app"
   ],
+
   "authorization": {
     "permissions": {
       "resourceSpecific": [
@@ -42,6 +50,7 @@
       ]
     }
   },
+
   "extensions": [
     {
       "requirements": {
@@ -53,14 +62,18 @@
         ],
         "scopes": ["mail"]
       },
+
       "runtimes": [
         {
           "id": "TaskPaneRuntime",
           "type": "general",
+
           "code": {
             "page": "https://localhost:3000/taskpane.html"
           },
+
           "lifetime": "short",
+
           "actions": [
             {
               "id": "TaskPaneRuntimeShow",
@@ -68,32 +81,22 @@
               "pinnable": false
             }
           ]
-        },
-        {
-          "id": "CommandsRuntime",
-          "type": "general",
-          "code": {
-            "page": "https://localhost:3000/commands.html"
-          },
-          "lifetime": "short",
-          "actions": [
-            {
-              "id": "action",
-              "type": "executeFunction"
-            }
-          ]
         }
       ],
+
       "ribbons": [
         {
           "contexts": ["mailCompose"],
+
           "tabs": [
             {
               "builtInTabId": "TabDefault",
+
               "groups": [
                 {
-                  "id": "msgReadGroup",
-                  "label": "Contoso Add-in",
+                  "id": "outlookJiraBridgeGroup",
+                  "label": "Outlook Jira Bridge",
+
                   "icons": [
                     {
                       "size": 16,
@@ -108,11 +111,13 @@
                       "url": "https://localhost:3000/assets/icon-80.png"
                     }
                   ],
+
                   "controls": [
                     {
-                      "id": "msgReadOpenPaneButton",
+                      "id": "openJiraBridgeButton",
                       "type": "button",
-                      "label": "Show Task Pane",
+                      "label": "Open Outlook Jira Bridge",
+
                       "icons": [
                         {
                           "size": 16,
@@ -127,35 +132,13 @@
                           "url": "https://localhost:3000/assets/icon-80.png"
                         }
                       ],
+
                       "supertip": {
-                        "title": "Show Task Pane",
-                        "description": "Opens a task pane"
+                        "title": "Outlook Jira Bridge",
+                        "description": "Open Outlook Jira Bridge"
                       },
+
                       "actionId": "TaskPaneRuntimeShow"
-                    },
-                    {
-                      "id": "ActionButton",
-                      "type": "button",
-                      "label": "Perform an action",
-                      "icons": [
-                        {
-                          "size": 16,
-                          "url": "https://localhost:3000/assets/icon-16.png"
-                        },
-                        {
-                          "size": 32,
-                          "url": "https://localhost:3000/assets/icon-32.png"
-                        },
-                        {
-                          "size": 80,
-                          "url": "https://localhost:3000/assets/icon-80.png"
-                        }
-                      ],
-                      "supertip": {
-                        "title": "Perform an action",
-                        "description": "Perform an action when clicked."
-                      },
-                      "actionId": "action"
                     }
                   ]
                 }
